@@ -6,6 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 //create product
 const createProduct = asyncHandler(async (req, res) => {
+  // console.log(req.body);
   const {
     name,
     barcode,
@@ -18,6 +19,7 @@ const createProduct = asyncHandler(async (req, res) => {
     batchNo,
     mfgDate,
     expiryDate,
+    addedBy,
   } = req.body;
 
   // Basic validation
@@ -57,6 +59,7 @@ const createProduct = asyncHandler(async (req, res) => {
     mfgDate,
     expiryDate,
     image: imageUrl,
+    addedBy,
   });
 
   return res
