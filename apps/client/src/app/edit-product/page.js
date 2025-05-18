@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
-const AddProduct = () => {
+const EditProduct = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     name: "",
     barcode: "",
@@ -18,12 +19,52 @@ const AddProduct = () => {
     batchNo: "",
     mfgDate: "",
     expiryDate: "",
-    addedBy: "6829c0c4493c76425f5220af", //addedBy dhyaan se hatana hai
   });
   const [productImage, setProductImage] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [productId, setProductId] = useState(null);
+
+  // Fetch product data based on ID from query parameter
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id) {
+      setProductId(id);
+      const fetchProduct = async () => {
+        try {
+          const response = await axios.get(`/api/v1/products/${id}`, {
+            withCredentials: true,
+          });
+          const product = response.data.data;
+          setFormData({
+            name: product.name || "",
+            barcode: product.barcode || "",
+            category: product.category || "",
+            distributor: product.distributor || "",
+            stock: product.stock?.toString() || "",
+            costPrice: product.costPrice?.toString() || "",
+            mrp: product.mrp?.toString() || "",
+            sellingPrice: product.sellingPrice?.toString() || "",
+            batchNo: product.batchNo || "",
+            mfgDate: product.mfgDate
+              ? new Date(product.mfgDate).toISOString().split("T")[0]
+              : "",
+            expiryDate: product.expiryDate
+              ? new Date(product.expiryDate).toISOString().split("T")[0]
+              : "",
+          });
+        } catch (err) {
+          setError(
+            err.response?.data?.message || "Failed to fetch product data"
+          );
+        }
+      };
+      fetchProduct();
+    } else {
+      setError("No product ID provided. Please select a product to edit.");
+    }
+  }, [searchParams]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,32 +83,23 @@ const AddProduct = () => {
 
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
-      if (formData[key]) data.append(key, formData[key]);
+      if (formData[key] && formData[key] !== "") {
+        data.append(key, formData[key]);
+      }
     });
-    if (productImage) data.append("file", productImage);
+    if (productImage) {
+      data.append("file", productImage);
+    }
 
     try {
-      const response = await axios.post("/api/v1/products/create", data, {
+      const response = await axios.put(`/api/v1/products/${productId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
       setSuccess(response.data.message);
-      setFormData({
-        name: "",
-        barcode: "",
-        category: "",
-        distributor: "",
-        stock: "",
-        costPrice: "",
-        mrp: "",
-        sellingPrice: "",
-        batchNo: "",
-        mfgDate: "",
-        expiryDate: "",
-      });
-      setProductImage(null);
+      setTimeout(() => router.push("/view-products"), 1500);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create product");
+      setError(err.response?.data?.message || "Failed to update product");
     } finally {
       setLoading(false);
     }
@@ -78,7 +110,7 @@ const AddProduct = () => {
       <div className="max-w-3xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-            Add Product
+            Edit Product
           </h1>
           <button
             onClick={() => router.push("/dashboard")}
@@ -255,12 +287,12 @@ const AddProduct = () => {
           </div>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !productId}
             className={`w-full mt-6 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
+              loading || !productId ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {loading ? "Adding Product..." : "Add Product"}
+            {loading ? "Updating Product..." : "Update Product"}
           </button>
         </form>
       </div>
@@ -268,4 +300,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;
