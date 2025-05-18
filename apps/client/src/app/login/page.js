@@ -26,11 +26,9 @@ export default function LoginPage() {
     setErrorMsg("");
 
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/login`,
-        formData,
-        { withCredentials: true }
-      );
+      const res = await axios.post(`/api/v1/users/login`, formData, {
+        withCredentials: true,
+      });
       router.push("/dashboard"); // change if your homepage is different
     } catch (err) {
       setErrorMsg(err.response?.data?.message || "Login failed");
