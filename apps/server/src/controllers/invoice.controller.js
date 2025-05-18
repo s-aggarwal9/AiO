@@ -2,9 +2,11 @@ import Invoice from "../models/Invoice.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { generateInvoicePDF } from "../utils/pdfGenerator.js";
 
 // Create a new invoice
 const createInvoice = asyncHandler(async (req, res) => {
+  // console.log(req.body);
   const {
     customerName,
     customerPhone,
@@ -12,6 +14,8 @@ const createInvoice = asyncHandler(async (req, res) => {
     items,
     totalAmount,
     paymentMethod,
+    createdBy,
+    invoiceNumber,
   } = req.body;
 
   if (!items || !items.length) {
@@ -27,6 +31,9 @@ const createInvoice = asyncHandler(async (req, res) => {
     items,
     totalAmount,
     paymentMethod,
+    createdBy,
+    invoiceNumber,
+    subtotal: totalAmount,
   });
 
   return res
