@@ -19,9 +19,11 @@ app.use(cookieParser());
 // routes import
 import userRouter from "./routes/user.routes.js";
 import productRouter from "./routes/product.routes.js";
+import invoiceRouter from "./routes/invoice.routes.js";
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/invoices", invoiceRouter);
 
 app.get("/", (req, res) => {
   res.send("Root route is working! 🚀");
