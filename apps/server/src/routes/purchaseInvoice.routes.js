@@ -4,7 +4,7 @@ import {
   getAllPurchaseInvoices,
   getPurchaseInvoiceById,
 } from "../controllers/purchaseInvoice.controller.js";
-import { verifyJWT } from "../middlewares/verifyJWT.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 

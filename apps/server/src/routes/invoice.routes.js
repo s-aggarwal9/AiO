@@ -7,7 +7,7 @@ import {
   updateInvoice,
   deleteInvoice,
 } from "../controllers/invoice.controller.js";
-import { verifyJWT } from "../middlewares/verifyJWT.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

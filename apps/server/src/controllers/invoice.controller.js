@@ -1,7 +1,7 @@
 import Invoice from "../models/Invoice.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/apiError.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 // Create a new invoice
 const createInvoice = asyncHandler(async (req, res) => {

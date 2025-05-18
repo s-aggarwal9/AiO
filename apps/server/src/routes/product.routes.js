@@ -11,7 +11,7 @@ import {
 } from "../controllers/product.controller.js";
 
 import { uploadSingleAttachment } from "../middlewares/multer.middleware.js";
-import { verifyJWT } from "../middlewares/verifyJWT.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

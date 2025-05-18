@@ -1,8 +1,8 @@
 import { PurchaseInvoice } from "../models/purchaseInvoice.model.js";
 import Product from "../models/Product.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/apiError.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 // Create Purchase Invoice
 const createPurchaseInvoice = asyncHandler(async (req, res) => {
