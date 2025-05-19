@@ -94,6 +94,8 @@ const updateInvoice = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
+  // console.log("body", req.body);
+
   const invoice = await Invoice.findByIdAndUpdate(id, updates, {
     new: true,
     runValidators: true,

@@ -15,13 +15,12 @@ const ViewInvoices = () => {
     endDate: "",
     customerName: "",
   });
-  const [sortOrder, setSortOrder] = useState("asc"); // For invoice number sorting
+  const [sortOrder, setSortOrder] = useState("asc");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
 
-  // Fetch invoices
   const fetchInvoices = async (page = 1) => {
     try {
       const params = {
@@ -46,19 +45,16 @@ const ViewInvoices = () => {
     fetchInvoices();
   }, []);
 
-  // Handle filter change
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Apply filters
   const handleApplyFilters = () => {
     setCurrentPage(1);
     fetchInvoices(1);
   };
 
-  // Clear filters
   const handleClearFilters = () => {
     setFilters({
       startDate: "",
@@ -69,13 +65,11 @@ const ViewInvoices = () => {
     fetchInvoices(1);
   };
 
-  // Handle page change
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     fetchInvoices(newPage);
   };
 
-  // Sort by invoice number
   const handleSortByInvoiceNumber = () => {
     const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newSortOrder);
@@ -89,18 +83,24 @@ const ViewInvoices = () => {
     );
   };
 
-  // View PDF in new tab
   const handleViewInvoice = (id) => {
     window.open(`/api/v1/invoices/${id}/pdf`, "_blank");
   };
 
-  // Confirm delete
+  const handleEditInvoice = (id) => {
+    router.push(`/edit-invoice/${id}`);
+  };
+
+  // Handle edit navigation
+  // const handleEdit = (productId) => {
+  //   router.push(`/edit-product?id=${productId}`);
+  // };
+
   const confirmDelete = (invoice) => {
     setInvoiceToDelete(invoice);
     setShowDeleteModal(true);
   };
 
-  // Handle delete
   const handleDeleteInvoice = async () => {
     if (!invoiceToDelete) return;
     try {
@@ -114,7 +114,7 @@ const ViewInvoices = () => {
       setError("");
       setShowDeleteModal(false);
       setInvoiceToDelete(null);
-      fetchInvoices(currentPage); // Refresh the current page
+      fetchInvoices(currentPage);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete invoice");
       setSuccess("");
@@ -122,7 +122,6 @@ const ViewInvoices = () => {
     }
   };
 
-  // Format date as DD/MM/YYYY
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-IN");
   };
@@ -142,7 +141,6 @@ const ViewInvoices = () => {
           </button>
         </div>
 
-        {/* Filters */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Filter Invoices
@@ -202,11 +200,9 @@ const ViewInvoices = () => {
           </div>
         </div>
 
-        {/* Messages */}
         {error && <p className="text-red-600 mb-4">{error}</p>}
         {success && <p className="text-green-600 mb-4">{success}</p>}
 
-        {/* Invoices Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -268,7 +264,7 @@ const ViewInvoices = () => {
                         <EyeIcon className="h-5 w-5" />
                       </button>
                       <button
-                        onClick={() => alert("Edit functionality coming soon!")}
+                        onClick={() => handleEditInvoice(invoice._id)}
                         className="text-gray-600 hover:text-gray-800"
                         title="Edit"
                       >
@@ -289,7 +285,6 @@ const ViewInvoices = () => {
           </table>
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-4 flex justify-between items-center">
             <button
@@ -320,7 +315,6 @@ const ViewInvoices = () => {
           </div>
         )}
 
-        {/* Delete Confirmation Modal */}
         {showDeleteModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl p-6 w-full max-w-md">
