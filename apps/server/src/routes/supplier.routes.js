@@ -1,9 +1,9 @@
 import {
   getAllSuppliers,
   createSupplier,
-} from "../controllers/supplier.controller";
+} from "../controllers/supplier.controller.js";
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -15,6 +15,6 @@ router
   .post(createSupplier) // Create new supplier
   .get(getAllSuppliers); // Get all suppliers
 
-router.route("/:id").get(getPurchaseInvoiceById); // Get a specific purchase invoice
+// router.route("/:id").get(getSupplierById); baad mein karta hoon
 
 export default router;

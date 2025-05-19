@@ -1,4 +1,4 @@
-import { PurchaseInvoice } from "../models/purchaseInvoice.model.js";
+import PurchaseInvoice from "../models/purchaseInvoice.model.js";
 import Product from "../models/Product.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
