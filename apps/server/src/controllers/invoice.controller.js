@@ -55,7 +55,7 @@ const getInvoiceById = asyncHandler(async (req, res) => {
 
 // Get all invoices, with optional filters (e.g. date range)
 const getAllInvoices = asyncHandler(async (req, res) => {
-  const { startDate, endDate, customerName } = req.query;
+  const { startDate, endDate, customerName, page = 1, limit = 10 } = req.query;
 
   let filter = {};
 
@@ -69,9 +69,24 @@ const getAllInvoices = asyncHandler(async (req, res) => {
     filter.customerName = new RegExp(customerName, "i"); // case-insensitive
   }
 
-  const invoices = await Invoice.find(filter).sort({ createdAt: -1 });
+  const pageNum = parseInt(page);
+  const limitNum = parseInt(limit);
+  const skip = (pageNum - 1) * limitNum;
 
-  return res.status(200).json(new ApiResponse(200, invoices));
+  const totalInvoices = await Invoice.countDocuments(filter);
+  const invoices = await Invoice.find(filter)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limitNum);
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      invoices,
+      totalInvoices,
+      totalPages: Math.ceil(totalInvoices / limitNum),
+      currentPage: pageNum,
+    })
+  );
 });
 
 // Update invoice - optional, depends on your requirements
