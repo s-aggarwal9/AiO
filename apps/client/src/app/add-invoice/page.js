@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
+// create a new invoice
 const AddInvoice = () => {
   const router = useRouter();
   const [products, setProducts] = useState([]);
