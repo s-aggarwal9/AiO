@@ -18,9 +18,9 @@ const productSchema = new Schema(
       trim: true,
     },
     distributor: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Distributor",
       required: true,
-      trim: true,
     },
     stock: {
       type: Number,

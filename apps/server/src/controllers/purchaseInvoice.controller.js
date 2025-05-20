@@ -1,51 +1,117 @@
 import PurchaseInvoice from "../models/purchaseInvoice.model.js";
 import Product from "../models/Product.model.js";
+import Distributor from "../models/Distributor.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import mongoose from "mongoose";
 
-// Create Purchase Invoice
+// Create a new purchase invoice
 const createPurchaseInvoice = asyncHandler(async (req, res) => {
-  const { invoiceNumber, distributor, items = [] } = req.body;
-  console.log(invoiceNumber, distributor, items);
-
-  if (!invoiceNumber || !distributor || items.length === 0) {
-    throw new ApiError(400, "All fields including items are required");
-  }
-
-  let totalAmount = 0;
-
-  // Update product stock and calculate total amount
-  for (const item of items) {
-    const product = await Product.findById(item.product);
-    if (!product) {
-      throw new ApiError(404, `Product not found: ${item.product}`);
-    }
-
-    product.stock += item.quantity;
-    product.distributor = distributor;
-    await product.save();
-
-    totalAmount += item.costPrice * item.quantity;
-  }
-
-  const purchaseInvoice = await PurchaseInvoice.create({
+  const {
     invoiceNumber,
     distributor,
-    items,
-    totalAmount,
-    purchasedBy: req.user._id,
-  });
+    items = [],
+    paymentMethod,
+    status,
+    notes,
+  } = req.body;
 
-  res
-    .status(201)
-    .json(
-      new ApiResponse(
-        201,
-        purchaseInvoice,
-        "Purchase invoice created successfully"
-      )
-    );
+  // Validate required fields
+  if (!invoiceNumber) {
+    throw new ApiError(400, "Invoice number is required");
+  }
+  if (!distributor) {
+    throw new ApiError(400, "Distributor is required");
+  }
+  if (!items || !items.length) {
+    throw new ApiError(400, "Invoice must have at least one item");
+  }
+
+  // Get createdBy from the authenticated user (set by verifyJWT middleware)
+  const createdBy = req.user?._id;
+  if (!createdBy) {
+    throw new ApiError(401, "User not authenticated");
+  }
+
+  // Start a Mongoose transaction
+  const session = await mongoose.startSession();
+  try {
+    const result = await session.withTransaction(async () => {
+      // Validate distributor exists
+      const distributorDoc = await Distributor.findById(distributor).session(
+        session
+      );
+      if (!distributorDoc) {
+        throw new ApiError(404, "Distributor not found");
+      }
+
+      // Validate products and update stock
+      const updatedItems = [];
+      for (const item of items) {
+        if (
+          !item.product ||
+          !item.quantity ||
+          !item.rate ||
+          !item.costPrice ||
+          !item.mrp
+        ) {
+          throw new ApiError(
+            400,
+            "Each item must have product, quantity, rate, costPrice, and mrp"
+          );
+        }
+
+        const product = await Product.findById(item.product).session(session);
+        if (!product) {
+          throw new ApiError(404, `Product not found: ${item.product}`);
+        }
+
+        // Increase stock
+        const newStock = product.stock + item.quantity;
+        await Product.findByIdAndUpdate(
+          item.product,
+          { stock: newStock, distributor },
+          { session, runValidators: true }
+        );
+
+        // Prepare item with denormalized product name
+        updatedItems.push({
+          ...item,
+          name: product.name,
+        });
+      }
+
+      // Create the purchase invoice
+      const invoice = await PurchaseInvoice.create(
+        [
+          {
+            invoiceNumber,
+            distributor, // Store as supplier in the schema
+            items: updatedItems,
+            paymentMethod: paymentMethod || "cash",
+            status: status || "paid",
+            notes,
+            createdBy,
+          },
+        ],
+        { session }
+      );
+
+      return invoice[0];
+    });
+
+    // Transaction succeeded
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(201, result, "Purchase invoice created successfully")
+      );
+  } catch (error) {
+    throw error; // asyncHandler will handle the error
+  } finally {
+    await session.endSession();
+  }
 });
 
 // Get All Purchase Invoices

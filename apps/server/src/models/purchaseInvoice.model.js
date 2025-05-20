@@ -30,16 +30,16 @@ const purchaseInvoiceSchema = new Schema(
       unique: true,
       index: true,
     },
-    Distributor: {
+    distributor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Distributor",
       required: true,
     },
     items: [purchaseInvoiceItemSchema],
-    subtotal: { type: Number, required: true }, // Sum of (rate * quantity)
+    subtotal: { type: Number }, // Sum of (rate * quantity)
     tax: { type: Number, default: 0 }, // Sum of sgst + cgst + igst across items
     discount: { type: Number, default: 0 }, // Sum of discounts across items
-    totalAmount: { type: Number, required: true }, // subtotal - discount + tax
+    totalAmount: { type: Number }, // subtotal - discount + tax
     paymentMethod: {
       type: String,
       enum: ["cash", "card", "upi", "other"],
