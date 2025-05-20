@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const ViewDistributors = () => {
   const router = useRouter();
@@ -49,8 +50,8 @@ const ViewDistributors = () => {
   };
 
   // Handle edit navigation
-  const handleEdit = (invoiceId) => {
-    router.push(`/edit-invoice/${invoiceId}`);
+  const handleEdit = (distributorId) => {
+    router.push(`/edit-distributor/${distributorId}`);
   };
 
   // Pagination logic
@@ -135,13 +136,13 @@ const ViewDistributors = () => {
                           onClick={() => handleEdit(distributor._id)}
                           className="text-blue-600 hover:text-blue-800 mr-4"
                         >
-                          Edit
+                          <PencilIcon className="h-5 w-5" />
                         </button>
                         <button
                           onClick={() => handleDelete(distributor._id)}
                           className="text-red-600 hover:text-red-800"
                         >
-                          Delete
+                          <TrashIcon className="h-5 w-5" />
                         </button>
                       </td>
                     </tr>
