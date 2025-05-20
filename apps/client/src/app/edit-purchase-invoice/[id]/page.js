@@ -231,6 +231,17 @@ const EditPurchaseInvoice = () => {
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-1">
+                Distributor
+              </label>
+              <input
+                type="text"
+                value={formData.distributor}
+                className="w-full p-2 border rounded-lg bg-gray-100 text-gray-700"
+                readOnly
+              />
+            </div>
+            {/* <div>
+              <label className="block text-gray-700 font-medium mb-1">
                 Distributor *
               </label>
               <select
@@ -247,7 +258,7 @@ const EditPurchaseInvoice = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
             <div>
               <label className="block text-gray-700 font-medium mb-1">
                 Payment Method
