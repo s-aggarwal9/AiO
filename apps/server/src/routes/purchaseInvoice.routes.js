@@ -4,6 +4,7 @@ import {
   deletePurchaseInvoiceById,
   getAllPurchaseInvoices,
   getPurchaseInvoiceById,
+  updatePurchaseInvoiceById,
 } from "../controllers/purchaseInvoice.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -20,6 +21,7 @@ router
 router
   .route("/:id")
   .get(getPurchaseInvoiceById)
+  .put(updatePurchaseInvoiceById)
   .delete(deletePurchaseInvoiceById); // Get a specific purchase invoice
 
 export default router;

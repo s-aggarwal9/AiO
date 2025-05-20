@@ -149,15 +149,131 @@ const getAllPurchaseInvoices = asyncHandler(async (req, res) => {
 const getPurchaseInvoiceById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const invoice = await PurchaseInvoice.findById(id)
-    .populate("items.product", "name barcode")
-    .populate("purchasedBy", "name email");
+  const invoice = await PurchaseInvoice.findById(id).populate(
+    "distributor",
+    "name"
+  );
 
   if (!invoice) {
     throw new ApiError(404, "Purchase invoice not found");
   }
 
   res.status(200).json(new ApiResponse(200, invoice));
+});
+
+// Update a purchase invoice
+const updatePurchaseInvoiceById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const {
+    invoiceNumber,
+    distributor,
+    items = [],
+    paymentMethod,
+    status,
+    notes,
+  } = req.body;
+
+  // Validate required fields
+  if (!invoiceNumber) {
+    throw new ApiError(400, "Invoice number is required");
+  }
+  if (!distributor) {
+    throw new ApiError(400, "Distributor is required");
+  }
+  if (!items || !items.length) {
+    throw new ApiError(400, "Invoice must have at least one item");
+  }
+
+  const session = await mongoose.startSession();
+  try {
+    const result = await session.withTransaction(async () => {
+      // Find the existing invoice
+      const invoice = await PurchaseInvoice.findById(id).session(session);
+      if (!invoice) {
+        throw new ApiError(404, "Purchase invoice not found");
+      }
+
+      // Validate distributor exists
+      const distributorDoc = await Distributor.findById(distributor).session(
+        session
+      );
+      if (!distributorDoc) {
+        throw new ApiError(404, "Distributor not found");
+      }
+
+      // Revert stock for old items
+      for (const item of invoice.items) {
+        const product = await Product.findById(item.product).session(session);
+        if (!product) {
+          throw new ApiError(404, `Product not found: ${item.product}`);
+        }
+
+        const newStock = product.stock - item.quantity;
+        await Product.findByIdAndUpdate(
+          item.product,
+          { stock: newStock },
+          { session, runValidators: true }
+        );
+      }
+
+      // Update stock for new items
+      const updatedItems = [];
+      for (const item of items) {
+        if (
+          !item.product ||
+          !item.quantity ||
+          !item.rate ||
+          !item.costPrice ||
+          !item.mrp
+        ) {
+          throw new ApiError(
+            400,
+            "Each item must have product, quantity, rate, costPrice, and mrp"
+          );
+        }
+
+        const product = await Product.findById(item.product).session(session);
+        if (!product) {
+          throw new ApiError(404, `Product not found: ${item.product}`);
+        }
+
+        const newStock = product.stock + item.quantity;
+        await Product.findByIdAndUpdate(
+          item.product,
+          { stock: newStock, distributor },
+          { session, runValidators: true }
+        );
+
+        updatedItems.push({
+          ...item,
+          name: product.name,
+        });
+      }
+
+      // Update the invoice fields
+      invoice.invoiceNumber = invoiceNumber;
+      invoice.distributor = distributor;
+      invoice.items = updatedItems;
+      invoice.paymentMethod = paymentMethod || "cash";
+      invoice.status = status || "paid";
+      invoice.notes = notes;
+
+      // Save the invoice to trigger pre-save hook
+      const updatedInvoice = await invoice.save({ session });
+
+      return updatedInvoice;
+    });
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, result, "Purchase invoice updated successfully")
+      );
+  } catch (error) {
+    throw error;
+  } finally {
+    await session.endSession();
+  }
 });
 
 // Delete a purchase invoice
@@ -211,5 +327,6 @@ export {
   createPurchaseInvoice,
   getAllPurchaseInvoices,
   getPurchaseInvoiceById,
+  updatePurchaseInvoiceById,
   deletePurchaseInvoiceById,
 };
