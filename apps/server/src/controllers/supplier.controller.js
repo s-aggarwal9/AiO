@@ -5,7 +5,9 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 //create supplier
 // Create a new supplier
-const createSupplier = asyncHandler(async (req, res) => {
+const createDistributor = asyncHandler(async (req, res) => {
+  // imp clg
+  // console.log("body", req.body, "user", req.user);
   const { name, gstin, address, phone, email, contactPerson, company } =
     req.body;
 
@@ -38,14 +40,14 @@ const createSupplier = asyncHandler(async (req, res) => {
 });
 
 // Get all suppliers
-const getAllSuppliers = asyncHandler(async (req, res) => {
-  const suppliers = await Supplier.find();
-  if (!suppliers || suppliers.length < 1) {
+const getAllDistributors = asyncHandler(async (req, res) => {
+  const distributors = await Supplier.find();
+  if (!distributors || distributors.length < 1) {
     throw new ApiError(404, "suppliers not found");
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, suppliers, "Suppliers fetched successfully"));
+    .json(new ApiResponse(200, distributors, "Suppliers fetched successfully"));
 });
 
-export { createSupplier, getAllSuppliers };
+export { createDistributor, getAllDistributors };

@@ -47,12 +47,12 @@ const Dashboard = () => {
           <DashboardCard title="Add Invoice" />
           <DashboardCard title="Add Purchase Invoice" />
           <DashboardCard title="Add Product" />
-          <DashboardCard title="Add Supplier" />
+          <DashboardCard title="Add Distributor" />
 
           <DashboardCard title="View Invoices" />
           <DashboardCard title="View Purchase Invoices" />
           <DashboardCard title="View Products" />
-          <DashboardCard title="View Suppliers" />
+          <DashboardCard title="View Distributors" />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import {
-  getAllSuppliers,
-  createSupplier,
+  getAllDistributors,
+  createDistributor,
 } from "../controllers/supplier.controller.js";
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -12,8 +12,8 @@ router.use(verifyJWT);
 
 router
   .route("/")
-  .post(createSupplier) // Create new supplier
-  .get(getAllSuppliers); // Get all suppliers
+  .post(createDistributor) // Create new supplier
+  .get(getAllDistributors); // Get all suppliers
 
 // router.route("/:id").get(getSupplierById); baad mein karta hoon
 
