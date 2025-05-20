@@ -133,13 +133,13 @@ const ViewProducts = () => {
                           onClick={() => handleEdit(product._id)}
                           className="text-blue-600 hover:text-blue-800 mr-4"
                         >
-                          Edit
+                          <PencilIcon className="h-5 w-5" />
                         </button>
                         <button
                           onClick={() => handleDelete(product._id)}
                           className="text-red-600 hover:text-red-800"
                         >
-                          Delete
+                          <TrashIcon className="h-5 w-5" />
                         </button>
                       </td>
                     </tr>
