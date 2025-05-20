@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createPurchaseInvoice,
+  deletePurchaseInvoiceById,
   getAllPurchaseInvoices,
   getPurchaseInvoiceById,
 } from "../controllers/purchaseInvoice.controller.js";
@@ -16,6 +17,9 @@ router
   .post(createPurchaseInvoice) // Create new purchase invoice
   .get(getAllPurchaseInvoices); // Get all purchase invoices
 
-router.route("/:id").get(getPurchaseInvoiceById); // Get a specific purchase invoice
+router
+  .route("/:id")
+  .get(getPurchaseInvoiceById)
+  .delete(deletePurchaseInvoiceById); // Get a specific purchase invoice
 
 export default router;

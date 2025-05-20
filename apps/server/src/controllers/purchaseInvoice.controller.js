@@ -87,7 +87,7 @@ const createPurchaseInvoice = asyncHandler(async (req, res) => {
         [
           {
             invoiceNumber,
-            distributor, // Store as supplier in the schema
+            distributor,
             items: updatedItems,
             paymentMethod: paymentMethod || "cash",
             status: status || "paid",
@@ -114,13 +114,35 @@ const createPurchaseInvoice = asyncHandler(async (req, res) => {
   }
 });
 
-// Get All Purchase Invoices
+// Get all purchase invoices
 const getAllPurchaseInvoices = asyncHandler(async (req, res) => {
-  const invoices = await PurchaseInvoice.find()
-    .populate("items.product", "name barcode")
-    .populate("purchasedBy", "name email");
+  const { startDate, endDate, distributorId } = req.query;
 
-  res.status(200).json(new ApiResponse(200, invoices));
+  // Build query
+  const query = {};
+
+  // Date range filter
+  if (startDate && endDate) {
+    query.createdAt = {
+      $gte: new Date(startDate),
+      $lte: new Date(endDate),
+    };
+  }
+
+  // Distributor filter
+  if (distributorId) {
+    query.distributor = distributorId;
+  }
+
+  const invoices = await PurchaseInvoice.find(query)
+    .populate("distributor", "name") // Populate distributor name
+    .sort({ createdAt: -1 }); // Sort by date descending
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, invoices, "Purchase invoices fetched successfully")
+    );
 });
 
 // Get One Purchase Invoice by ID
@@ -138,8 +160,56 @@ const getPurchaseInvoiceById = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, invoice));
 });
 
+// Delete a purchase invoice
+const deletePurchaseInvoiceById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  // Start a Mongoose transaction
+  const session = await mongoose.startSession();
+  try {
+    const result = await session.withTransaction(async () => {
+      const invoice = await PurchaseInvoice.findById(id).session(session);
+      if (!invoice) {
+        throw new ApiError(404, "Purchase invoice not found");
+      }
+
+      // Revert stock changes
+      for (const item of invoice.items) {
+        const product = await Product.findById(item.product).session(session);
+        if (!product) {
+          throw new ApiError(404, `Product not found: ${item.product}`);
+        }
+
+        const newStock = product.stock - item.quantity;
+        await Product.findByIdAndUpdate(
+          item.product,
+          { stock: newStock },
+          { session, runValidators: true }
+        );
+      }
+
+      // Delete the invoice
+      await PurchaseInvoice.findByIdAndDelete(id).session(session);
+
+      return {};
+    });
+
+    // Transaction succeeded
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, result, "Purchase invoice deleted successfully")
+      );
+  } catch (error) {
+    throw error;
+  } finally {
+    await session.endSession();
+  }
+});
+
 export {
   createPurchaseInvoice,
   getAllPurchaseInvoices,
   getPurchaseInvoiceById,
+  deletePurchaseInvoiceById,
 };
