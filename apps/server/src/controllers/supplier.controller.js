@@ -43,11 +43,13 @@ const createDistributor = asyncHandler(async (req, res) => {
 const getAllDistributors = asyncHandler(async (req, res) => {
   const distributors = await Supplier.find();
   if (!distributors || distributors.length < 1) {
-    throw new ApiError(404, "suppliers not found");
+    throw new ApiError(404, "distributors not found");
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, distributors, "Suppliers fetched successfully"));
+    .json(
+      new ApiResponse(200, distributors, "Distributors fetched successfully")
+    );
 });
 
 export { createDistributor, getAllDistributors };

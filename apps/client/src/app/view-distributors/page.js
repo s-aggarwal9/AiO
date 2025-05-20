@@ -13,9 +13,9 @@ const ViewDistributors = () => {
   const [loading, setLoading] = useState(false);
   const itemsPerPage = 10;
 
-  // Fetch products on mount
+  // Fetch distributors on mount
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchDistributors = async () => {
       setLoading(true);
       try {
         const response = await axios.get("/api/v1/distributors", {
@@ -23,15 +23,15 @@ const ViewDistributors = () => {
         });
         setdistributors(response.data.data);
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to fetch products");
+        setError(err.response?.data?.message || "Failed to fetch distributors");
       } finally {
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchDistributors();
   }, []);
 
-  // Handle delete product
+  // Handle delete distributor
   const handleDelete = async (id) => {
     setError("");
     setSuccess("");
@@ -39,20 +39,22 @@ const ViewDistributors = () => {
       const response = await axios.delete(`/api/v1/distributors/${id}`, {
         withCredentials: true,
       });
-      setProducts(products.filter((product) => product._id !== id));
+      setdistributors(
+        distributors.filter((distributor) => distributor._id !== id)
+      );
       setSuccess(response.data.message);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to delete product");
+      setError(err.response?.data?.message || "Failed to delete distributor");
     }
   };
 
   // Handle edit navigation
-  const handleEdit = (productId) => {
-    router.push(`/edit-product/${productId}`);
+  const handleEdit = (invoiceId) => {
+    router.push(`/edit-invoice/${invoiceId}`);
   };
 
   // Pagination logic
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = Math.ceil(distributors.length / itemsPerPage);
   const paginatedDistributors = distributors.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -82,7 +84,7 @@ const ViewDistributors = () => {
         {success && <p className="text-green-600 mb-4">{success}</p>}
         {loading ? (
           <p className="text-gray-600">Loading distributors...</p>
-        ) : products.length === 0 ? (
+        ) : distributors.length === 0 ? (
           <p className="text-gray-600">No distributors found.</p>
         ) : (
           <>
@@ -106,7 +108,7 @@ const ViewDistributors = () => {
                       Email
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Contact Person
+                      Actions
                     </th>
                   </tr>
                 </thead>
