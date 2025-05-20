@@ -50,8 +50,8 @@ const ViewDistributors = () => {
   };
 
   // Handle edit navigation
-  const handleEdit = (distributorId) => {
-    router.push(`/edit-distributor/${distributorId}`);
+  const handleEdit = (id) => {
+    router.push(`/edit-distributor/${id}`);
   };
 
   // Pagination logic

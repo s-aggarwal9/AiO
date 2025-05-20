@@ -1,6 +1,8 @@
 import {
   getAllDistributors,
   createDistributor,
+  deleteDistributorById,
+  getDistributorById,
 } from "../controllers/supplier.controller.js";
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -15,6 +17,6 @@ router
   .post(createDistributor) // Create new supplier
   .get(getAllDistributors); // Get all suppliers
 
-// router.route("/:id").get(getSupplierById); baad mein karta hoon
+router.route("/:id").get(getDistributorById).delete(deleteDistributorById);
 
 export default router;

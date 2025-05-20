@@ -52,4 +52,38 @@ const getAllDistributors = asyncHandler(async (req, res) => {
     );
 });
 
-export { createDistributor, getAllDistributors };
+// Get distributorById
+const getDistributorById = asyncHandler(async (req, res) => {
+  // console.log("req from getDistById", req);
+  const { id } = req.params;
+
+  const distributor = await Supplier.findById(id);
+
+  if (!distributor) {
+    throw new ApiError(404, "Distributor not found");
+  }
+
+  return res.status(200).json(new ApiResponse(200, distributor));
+});
+
+// Delete Distributor by id
+const deleteDistributorById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const distributor = await Supplier.findByIdAndDelete(id);
+
+  if (!distributor) {
+    throw new ApiError(404, "Distributor not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Distributor deleted successfully"));
+});
+
+export {
+  createDistributor,
+  getAllDistributors,
+  getDistributorById,
+  deleteDistributorById,
+};
