@@ -30,9 +30,9 @@ const purchaseInvoiceSchema = new Schema(
       unique: true,
       index: true,
     },
-    supplier: {
+    Distributor: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Supplier",
+      ref: "Distributor",
       required: true,
     },
     items: [purchaseInvoiceItemSchema],

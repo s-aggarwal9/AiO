@@ -7,6 +7,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 // Create Purchase Invoice
 const createPurchaseInvoice = asyncHandler(async (req, res) => {
   const { invoiceNumber, distributor, items = [] } = req.body;
+  console.log(invoiceNumber, distributor, items);
 
   if (!invoiceNumber || !distributor || items.length === 0) {
     throw new ApiError(400, "All fields including items are required");
@@ -22,6 +23,7 @@ const createPurchaseInvoice = asyncHandler(async (req, res) => {
     }
 
     product.stock += item.quantity;
+    product.distributor = distributor;
     await product.save();
 
     totalAmount += item.costPrice * item.quantity;
