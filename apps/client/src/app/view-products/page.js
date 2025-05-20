@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const ViewProducts = () => {
   const router = useRouter();

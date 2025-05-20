@@ -1,11 +1,12 @@
-import {
-  getAllDistributors,
-  createDistributor,
-  deleteDistributorById,
-  getDistributorById,
-} from "../controllers/supplier.controller.js";
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import {
+  createDistributor,
+  deleteDistributorById,
+  getAllDistributors,
+  getDistributorById,
+  updateDistributorById,
+} from "../controllers/distributor.controller.js";
 
 const router = Router();
 
@@ -17,6 +18,10 @@ router
   .post(createDistributor) // Create new supplier
   .get(getAllDistributors); // Get all suppliers
 
-router.route("/:id").get(getDistributorById).delete(deleteDistributorById);
+router
+  .route("/:id")
+  .get(getDistributorById)
+  .put(updateDistributorById)
+  .delete(deleteDistributorById);
 
 export default router;

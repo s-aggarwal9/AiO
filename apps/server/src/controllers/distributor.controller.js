@@ -1,10 +1,10 @@
-import Supplier from "../models/Supplier.model.js";
+import Distributor from "../models/Distributor.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-//create supplier
-// Create a new supplier
+//create distributor
+// Create a new distributor
 const createDistributor = asyncHandler(async (req, res) => {
   // imp clg
   // console.log("body", req.body, "user", req.user);
@@ -13,7 +13,7 @@ const createDistributor = asyncHandler(async (req, res) => {
 
   // Validate required fields
   if (!name) {
-    throw new ApiError(400, "Supplier name is required");
+    throw new ApiError(400, "Distributor name is required");
   }
 
   // Get createdBy from the authenticated user (set by verifyJWT middleware)
@@ -22,8 +22,8 @@ const createDistributor = asyncHandler(async (req, res) => {
     throw new ApiError(401, "User not authenticated");
   }
 
-  // Create the supplier
-  const supplier = await Supplier.create({
+  // Create the distributor
+  const distributor = await Distributor.create({
     name,
     gstin,
     address,
@@ -36,12 +36,12 @@ const createDistributor = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(201, supplier, "Supplier created successfully"));
+    .json(new ApiResponse(201, distributor, "Distrbutor created successfully"));
 });
 
-// Get all suppliers
+// Get all distributors
 const getAllDistributors = asyncHandler(async (req, res) => {
-  const distributors = await Supplier.find();
+  const distributors = await Distributor.find();
   if (!distributors || distributors.length < 1) {
     throw new ApiError(404, "distributors not found");
   }
@@ -57,7 +57,7 @@ const getDistributorById = asyncHandler(async (req, res) => {
   // console.log("req from getDistById", req);
   const { id } = req.params;
 
-  const distributor = await Supplier.findById(id);
+  const distributor = await Distributor.findById(id);
 
   if (!distributor) {
     throw new ApiError(404, "Distributor not found");
@@ -66,11 +66,32 @@ const getDistributorById = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, distributor));
 });
 
+// Update Distributor By Id
+const updateDistributorById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  const distributor = await Distributor.findByIdAndUpdate(id, updates, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!distributor) {
+    throw new ApiError(404, "Distributor not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, distributor, "Distributor updated successfully")
+    );
+});
+
 // Delete Distributor by id
 const deleteDistributorById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const distributor = await Supplier.findByIdAndDelete(id);
+  const distributor = await Distributor.findByIdAndDelete(id);
 
   if (!distributor) {
     throw new ApiError(404, "Distributor not found");
@@ -85,5 +106,6 @@ export {
   createDistributor,
   getAllDistributors,
   getDistributorById,
+  updateDistributorById,
   deleteDistributorById,
 };

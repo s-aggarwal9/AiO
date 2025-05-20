@@ -1,6 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
 
-const supplierSchema = new Schema(
+const distributorSchema = new Schema(
   {
     name: {
       type: String,
@@ -42,6 +42,6 @@ const supplierSchema = new Schema(
   { timestamps: true }
 );
 
-const Supplier = model("Supplier", supplierSchema);
+const Distributor = model("Distributor", distributorSchema);
 
-export default Supplier;
+export default Distributor;

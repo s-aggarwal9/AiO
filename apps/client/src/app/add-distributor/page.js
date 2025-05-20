@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const AddDistributor = () => {
-  // const { name, gstin, address, phone, email, contactPerson, company } =
-  //   req.body;
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
@@ -16,13 +14,8 @@ const AddDistributor = () => {
     email: "",
     contactPerson: "",
     company: "",
-    // sellingPrice: "",
-    // batchNo: "",
-    // mfgDate: "",
-    // expiryDate: "",
-    // addedBy: "6829c0c4493c76425f5220af", //addedBy dhyaan se hatana hai
   });
-  //   const [productImage, setProductImage] = useState(null);
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,10 +24,6 @@ const AddDistributor = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  //   const handleFileChange = (e) => {
-  //     setProductImage(e.target.files[0]);
-  //   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,17 +41,12 @@ const AddDistributor = () => {
       company: formData.company,
     };
 
-    // console.log("prev formData", formData, "form data created for req", data);
-
-    // setLoading(false);
-
     try {
       const response = await axios.post("/api/v1/distributors", data, {
         withCredentials: true,
       });
       setSuccess(response.data.message);
-      // const { name, gstin, address, phone, email, contactPerson, company } =
-      //   req.body;
+
       setFormData({
         name: "",
         gstin: "",
@@ -71,12 +55,7 @@ const AddDistributor = () => {
         email: "",
         contactPerson: "",
         company: "",
-        //     // sellingPrice: "",
-        //     // batchNo: "",
-        //     // mfgDate: "",
-        //     // expiryDate: "",
       });
-      //   //   setProductImage(null);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create distributor");
     } finally {
@@ -166,7 +145,6 @@ const AddDistributor = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                // min="0"
                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -180,8 +158,6 @@ const AddDistributor = () => {
                 name="contactPerson"
                 value={formData.contactPerson}
                 onChange={handleInputChange}
-                // min="0"
-                // step="0.01"
                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
@@ -195,74 +171,10 @@ const AddDistributor = () => {
                 name="company"
                 value={formData.company}
                 onChange={handleInputChange}
-                // min="0"
-                // step="0.01"
                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
-            {/* <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Selling Price
-              </label>
-              <input
-                type="number"
-                name="sellingPrice"
-                value={formData.sellingPrice}
-                onChange={handleInputChange}
-                min="0"
-                step="0.01"
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Batch Number
-              </label>
-              <input
-                type="text"
-                name="batchNo"
-                value={formData.batchNo}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Manufacturing Date
-              </label>
-              <input
-                type="date"
-                name="mfgDate"
-                value={formData.mfgDate}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Expiry Date
-              </label>
-              <input
-                type="date"
-                name="expiryDate"
-                value={formData.expiryDate}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Product Image
-              </label>
-              <input
-                type="file"
-                name="file"
-                onChange={handleFileChange}
-                accept="image/*"
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div> */}
           </div>
           <button
             type="submit"

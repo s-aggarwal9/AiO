@@ -21,7 +21,7 @@ import userRouter from "./routes/user.routes.js";
 import productRouter from "./routes/product.routes.js";
 import invoiceRouter from "./routes/invoice.routes.js";
 import purchaseInvoiceRouter from "./routes/purchaseInvoice.routes.js";
-import distributorRouter from "./routes/supplier.routes.js";
+import distributorRouter from "./routes/distributor.routes.js";
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
