@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
@@ -24,6 +24,103 @@ const AddProduct = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // const {
+  //   name,
+  //   barcode,
+  //   category,
+  //   distributor,
+  //   stock,
+  //   costPrice,
+  //   mrp,
+  //   sellingPrice,
+  //   batchNo,
+  //   mfgDate,
+  //   expiryDate,
+  //   addedBy,
+  // } = req.body;
+
+  const dummyData = [
+    {
+      name: "Milk",
+      barcode: "1001",
+      category: "Dairy",
+      distributor: "682c11637b3a6290c76d5caa",
+      stock: 150,
+      costPrice: 22,
+      mrp: 28,
+      sellingPrice: 26,
+      batchNo: "B001",
+      mfgDate: "2025-05-01",
+      expiryDate: "2025-06-01",
+      addedBy: "6829c0c4493c76425f5220af",
+    },
+    {
+      name: "Bread",
+      barcode: "1002",
+      category: "Bakery",
+      distributor: "682c11637b3a6290c76d5caa",
+      stock: 80,
+      costPrice: 18,
+      mrp: 25,
+      sellingPrice: 22,
+      batchNo: "B002",
+      mfgDate: "2025-05-15",
+      expiryDate: "2025-05-30",
+      addedBy: "6829c0c4493c76425f5220af",
+    },
+    {
+      name: "Butter",
+      barcode: "1003",
+      category: "Dairy",
+      distributor: "682c11637b3a6290c76d5caa",
+      stock: 60,
+      costPrice: 45,
+      mrp: 55,
+      sellingPrice: 52,
+      batchNo: "B003",
+      mfgDate: "2025-04-20",
+      expiryDate: "2025-07-20",
+      addedBy: "6829c0c4493c76425f5220af",
+    },
+    {
+      name: "Eggs",
+      barcode: "1004",
+      category: "Poultry",
+      distributor: "682c11637b3a6290c76d5caa",
+      stock: 200,
+      costPrice: 5,
+      mrp: 8,
+      sellingPrice: 7,
+      batchNo: "B004",
+      mfgDate: "2025-05-18",
+      expiryDate: "2025-06-01",
+      addedBy: "6829c0c4493c76425f5220af",
+    },
+    {
+      name: "Orange Juice",
+      barcode: "1005",
+      category: "Beverages",
+      distributor: "682c11637b3a6290c76d5caa",
+      stock: 120,
+      costPrice: 30,
+      mrp: 40,
+      sellingPrice: 38,
+      batchNo: "B005",
+      mfgDate: "2025-05-10",
+      expiryDate: "2025-08-10",
+      addedBy: "6829c0c4493c76425f5220af",
+    },
+  ];
+
+  // useEffect(() => {
+  //   dummyData.map(async (item) => {
+  //     const res = await axios.post("/api/v1/products/create", item, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //       withCredentials: true,
+  //     });
+  //   });
+  // });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
