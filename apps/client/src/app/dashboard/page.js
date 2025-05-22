@@ -16,8 +16,19 @@ const Dashboard = () => {
     }
   };
 
-  const navigateTo = (path) => {
-    router.push(`/${path.toLowerCase().replace(/\s+/g, "-")}`);
+  // const navigateTo = (path) => {
+  //   router.push(`/${path.toLowerCase().replace(/\s+/g, "-")}`);
+  // };
+
+  const navigateTo = (title) => {
+    // Custom mapping for nested routes
+    const routeMap = {
+      "Sales Report": "reports/sales-report",
+    };
+
+    // Use the mapped route if it exists, otherwise fallback to the default logic
+    const path = routeMap[title] || title.toLowerCase().replace(/\s+/g, "-");
+    router.push(`/${path}`);
   };
 
   const DashboardCard = ({ title }) => (
@@ -48,11 +59,11 @@ const Dashboard = () => {
           <DashboardCard title="Add Purchase Invoice" />
           <DashboardCard title="Add Product" />
           <DashboardCard title="Add Distributor" />
-
           <DashboardCard title="View Invoices" />
           <DashboardCard title="View Purchase Invoices" />
           <DashboardCard title="View Products" />
           <DashboardCard title="View Distributors" />
+          <DashboardCard title="Sales Report" />
         </div>
       </div>
     </div>
