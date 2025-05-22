@@ -1,12 +1,7 @@
-// controllers/reportController.js
 import Invoice from "../models/Invoice.model.js";
-// const { Invoice } = require("../models");
 import { asyncHandler } from "../utils/asyncHandler.js";
-// const asyncHandler = require("../utils/asyncHandler");
 import { ApiError } from "../utils/ApiError.js";
-// const ApiError = require("../utils/ApiError");
 import { ApiResponse } from "../utils/ApiResponse.js";
-// const ApiResponse = require("../utils/ApiResponse");
 
 const getSalesReport = asyncHandler(async (req, res) => {
   const { startDate, endDate, paymentMethod, status } = req.query;
@@ -16,7 +11,7 @@ const getSalesReport = asyncHandler(async (req, res) => {
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    end.setDate(end.getDate() + 1); // include full end date
+    end.setDate(end.getDate() + 1);
 
     query.createdAt = {
       $gte: start,
