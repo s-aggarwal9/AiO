@@ -42,10 +42,6 @@ const AddInvoice = () => {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    console.log("Invoice Items:", items);
-  }, [items]);
-
   // Handle form field changes
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -90,62 +86,6 @@ const AddInvoice = () => {
     setSuggestions([]);
     console.log(items);
   };
-
-  // fix_barcode_addition.js (with item state log)
-
-  // const addOrUpdateItem = (product) => {
-  //   if (!product || !product._id) {
-  //     console.warn("Invalid product in addOrUpdateItem:", product);
-  //     return;
-  //   }
-
-  //   console.log("Adding product to invoice:", product);
-
-  //   setItems((prevItems) => {
-  //     const existingItem = prevItems.find(
-  //       (item) => item.product._id === product._id
-  //     );
-
-  //     const sellingPrice =
-  //       parseFloat(product.sellingPrice) || parseFloat(product.mrp) || 0;
-
-  //     if (existingItem) {
-  //       const newQuantity = existingItem.quantity + 1;
-  //       console.log("Updating existing item with new quantity:", newQuantity);
-  //       const updated = prevItems.map((item) => {
-  //         if (item.product._id === product._id) {
-  //           return {
-  //             ...item,
-  //             quantity: newQuantity,
-  //             amount: newQuantity * sellingPrice,
-  //           };
-  //         }
-  //         return item;
-  //       });
-  //       console.log("Updated Items:", updated);
-  //       return updated;
-  //     }
-
-  //     const newItem = {
-  //       product,
-  //       name: product.name,
-  //       barcode: product.barcode || "",
-  //       quantity: 1,
-  //       costPrice: product.costPrice || 0,
-  //       mrp: product.mrp || 0,
-  //       sellingPrice,
-  //       batchNo: product.batchNo || "",
-  //       manufacturingDate: product.mfgDate || "",
-  //       expiryDate: product.expiryDate || "",
-  //       amount: sellingPrice,
-  //     };
-  //     const result = [...prevItems, newItem];
-  //     console.log("Resulting Items Array:", result);
-  //     return result;
-  //   });
-
-  //   setSuggestions([]);
-  // };
 
   // Handle input change for autocomplete and barcode
   const handleInputChange = (e) => {

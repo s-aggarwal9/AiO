@@ -64,6 +64,7 @@ const Dashboard = () => {
           <DashboardCard title="View Products" />
           <DashboardCard title="View Distributors" />
           <DashboardCard title="Sales Report" />
+          <DashboardCard title="Add Expense" />
         </div>
       </div>
     </div>
