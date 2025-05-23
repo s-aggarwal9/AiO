@@ -42,28 +42,9 @@ const AddInvoice = () => {
     fetchProducts();
   }, []);
 
-  // Handle input change for autocomplete and barcode
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setInput(value);
-    if (value) {
-      // Autocomplete for name
-      const filtered = products.filter((product) =>
-        product.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filtered);
-      // Check for barcode match
-      const barcodeMatch = products.find(
-        (product) => product.barcode === value
-      );
-      if (barcodeMatch) {
-        addOrUpdateItem(barcodeMatch);
-        setInput("");
-      }
-    } else {
-      setSuggestions([]);
-    }
-  };
+  useEffect(() => {
+    console.log("Invoice Items:", items);
+  }, [items]);
 
   // Handle form field changes
   const handleFormChange = (e) => {
@@ -73,6 +54,7 @@ const AddInvoice = () => {
 
   // Add or update item in the invoice
   const addOrUpdateItem = (product) => {
+    console.log("from barcode", product);
     setItems((prevItems) => {
       const existingItem = prevItems.find(
         (item) => item.product._id === product._id
@@ -106,6 +88,87 @@ const AddInvoice = () => {
       ];
     });
     setSuggestions([]);
+    console.log(items);
+  };
+
+  // fix_barcode_addition.js (with item state log)
+
+  // const addOrUpdateItem = (product) => {
+  //   if (!product || !product._id) {
+  //     console.warn("Invalid product in addOrUpdateItem:", product);
+  //     return;
+  //   }
+
+  //   console.log("Adding product to invoice:", product);
+
+  //   setItems((prevItems) => {
+  //     const existingItem = prevItems.find(
+  //       (item) => item.product._id === product._id
+  //     );
+
+  //     const sellingPrice =
+  //       parseFloat(product.sellingPrice) || parseFloat(product.mrp) || 0;
+
+  //     if (existingItem) {
+  //       const newQuantity = existingItem.quantity + 1;
+  //       console.log("Updating existing item with new quantity:", newQuantity);
+  //       const updated = prevItems.map((item) => {
+  //         if (item.product._id === product._id) {
+  //           return {
+  //             ...item,
+  //             quantity: newQuantity,
+  //             amount: newQuantity * sellingPrice,
+  //           };
+  //         }
+  //         return item;
+  //       });
+  //       console.log("Updated Items:", updated);
+  //       return updated;
+  //     }
+
+  //     const newItem = {
+  //       product,
+  //       name: product.name,
+  //       barcode: product.barcode || "",
+  //       quantity: 1,
+  //       costPrice: product.costPrice || 0,
+  //       mrp: product.mrp || 0,
+  //       sellingPrice,
+  //       batchNo: product.batchNo || "",
+  //       manufacturingDate: product.mfgDate || "",
+  //       expiryDate: product.expiryDate || "",
+  //       amount: sellingPrice,
+  //     };
+  //     const result = [...prevItems, newItem];
+  //     console.log("Resulting Items Array:", result);
+  //     return result;
+  //   });
+
+  //   setSuggestions([]);
+  // };
+
+  // Handle input change for autocomplete and barcode
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInput(value);
+    if (value) {
+      // Autocomplete for name
+      const filtered = products.filter((product) =>
+        product.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filtered);
+      // Check for barcode match
+      const barcodeMatch = products.find(
+        (product) => product.barcode === value
+      );
+      if (barcodeMatch) {
+        console.log("value", value, "prodcut", barcodeMatch);
+        addOrUpdateItem(barcodeMatch);
+        setInput("");
+      }
+    } else {
+      setSuggestions([]);
+    }
   };
 
   // Handle suggestion click
@@ -262,6 +325,9 @@ const AddInvoice = () => {
           </button>
         </div>
         <form
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.preventDefault();
+          }}
           onSubmit={handleSubmit}
           className="bg-white p-6 rounded-xl shadow-sm border border-gray-200"
         >
@@ -346,7 +412,7 @@ const AddInvoice = () => {
                 <option value="other">Other</option>
               </select>
             </div>
-            <div className="md:col-span-2">
+            {/* <div className="md:col-span-2">
               <label className="block text-gray-700 font-medium mb-1">
                 Notes
               </label>
@@ -357,7 +423,7 @@ const AddInvoice = () => {
                 className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows="4"
               />
-            </div>
+            </div> */}
           </div>
           <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-1">
@@ -366,6 +432,9 @@ const AddInvoice = () => {
             <input
               type="text"
               value={input}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") e.preventDefault();
+              }}
               onChange={handleInputChange}
               placeholder="Type product name or scan barcode"
               className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
